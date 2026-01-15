@@ -96,6 +96,106 @@
             font-weight: 300;
         }
 
+        .hero-meta {
+            display: flex;
+            gap: 3rem;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .meta-item {
+            text-align: center;
+        }
+
+        .meta-label {
+            display: block;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.15em;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 0.5rem;
+        }
+
+        .meta-value {
+            display: block;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--white);
+        }
+
+        /* Author Section */
+        .author-section {
+            background: var(--off-white);
+            padding: 3rem 2rem;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .author-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: flex-start;
+            gap: 1.5rem;
+        }
+
+        .author-avatar {
+            width: 64px;
+            height: 64px;
+            background: #6366f1;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+
+        .author-info {
+            flex: 1;
+        }
+
+        .author-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--charcoal);
+            margin-bottom: 0.75rem;
+        }
+
+        .author-bio {
+            font-size: 0.95rem;
+            color: var(--dark-gray);
+            line-height: 1.7;
+            margin-bottom: 1rem;
+        }
+
+        .author-bio strong {
+            color: var(--charcoal);
+        }
+
+        .author-tags {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .tag {
+            font-size: 0.8rem;
+            color: var(--mid-gray);
+            background: var(--white);
+            padding: 0.3rem 0.75rem;
+            border-radius: 4px;
+            border: 1px solid var(--light-gray);
+        }
+
+        .tag:last-child {
+            background: transparent;
+            border: none;
+            padding-left: 0;
+        }
+
         /* Navigation */
         .nav {
             background: var(--white);
@@ -565,6 +665,26 @@
                 padding: 3rem 1.5rem;
             }
 
+            .hero-meta {
+                flex-direction: column;
+                gap: 1.5rem;
+                align-items: flex-start;
+            }
+
+            .meta-item {
+                text-align: left;
+            }
+
+            .author-content {
+                flex-direction: column;
+                text-align: center;
+                align-items: center;
+            }
+
+            .author-tags {
+                justify-content: center;
+            }
+
             .main {
                 padding: 2.5rem 1.5rem;
             }
@@ -587,8 +707,39 @@
             <span class="chapter-badge">Section 6.8</span>
             <h1>Clustering: <em>Advanced Methods</em> for Real-World Data</h1>
             <p class="hero-subtitle">Understanding latent structure discovery through probabilistic models, hierarchical methods, and practical algorithm selection.</p>
+            
+            <div class="hero-meta">
+                <div class="meta-item">
+                    <span class="meta-label">COURSE</span>
+                    <span class="meta-value">Advanced Data Mining</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">INSTRUCTOR</span>
+                    <span class="meta-value">Professor Nambo</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">INSTITUTION</span>
+                    <span class="meta-value">Kanazawa University</span>
+                </div>
+            </div>
         </div>
     </header>
+    
+    <!-- Author Section -->
+    <section class="author-section">
+        <div class="author-content">
+            <div class="author-avatar">👨‍🎓</div>
+            <div class="author-info">
+                <h3 class="author-name">Maju Sumanto</h3>
+                <p class="author-bio">This interactive educational material was created to fulfill the requirements of the <strong>Advanced Data Mining</strong> course at Kanazawa University, under the supervision of <strong>Professor Nambo</strong>. The visualizations are designed to help students understand complex clustering concepts through hands-on exploration.</p>
+                <div class="author-tags">
+                    <span class="tag">Graduate Student</span>
+                    <span class="tag">Kanazawa University</span>
+                    <span class="tag">• January 2026</span>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- Navigation -->
     <nav class="nav">
