@@ -344,7 +344,7 @@
         canvas {
             display: block;
             width: 100%;
-            height: 320px;
+            height: 450px;
             cursor: crosshair;
         }
 
@@ -755,7 +755,7 @@
             <!-- Hierarchical Demo -->
             <!-- ADD Aggromerating Clustering HERE -->
             <div style="margin: 30px 0;">
-                <iframe src="aggromerative_clustering.html" width="100%" height="1800" style="border: 1px solid #ddd; border-radius: 8px;"></iframe>
+                <iframe src="aggromerative_clustering.html" width="100%" height="1700" style="border: 1px solid #ddd; border-radius: 8px;"></iframe>
             </div>
         </section>
 
@@ -958,7 +958,7 @@
             kmeansPoints.forEach((p, i) => {
                 const color = kmeansAssignments[i] !== undefined ? kmeansColors[kmeansAssignments[i]] : '#888';
                 kmeansCtx.beginPath();
-                kmeansCtx.arc(p.x, p.y, 6, 0, Math.PI * 2);
+                kmeansCtx.arc(p.x, p.y, 4, 0, Math.PI * 2);
                 kmeansCtx.fillStyle = color;
                 kmeansCtx.fill();
             });
@@ -966,11 +966,11 @@
             // Draw centroids
             kmeansCentroids.forEach((c, i) => {
                 kmeansCtx.beginPath();
-                kmeansCtx.arc(c.x, c.y, 12, 0, Math.PI * 2);
+                kmeansCtx.arc(c.x, c.y, 10, 0, Math.PI * 2);
                 kmeansCtx.fillStyle = '#1a1a1a';
                 kmeansCtx.fill();
                 kmeansCtx.beginPath();
-                kmeansCtx.arc(c.x, c.y, 8, 0, Math.PI * 2);
+                kmeansCtx.arc(c.x, c.y, 6, 0, Math.PI * 2);
                 kmeansCtx.fillStyle = kmeansColors[i];
                 kmeansCtx.fill();
             });
