@@ -1006,13 +1006,13 @@
             
             // Generate 3 clusters
             for (let c = 0; c < 3; c++) {
-                const cx = 80 + Math.random() * (rect.width - 160);
-                const cy = 60 + Math.random() * (rect.height - 120);
+                const cx = 100 + Math.random() * (rect.width - 200);  // more margin
+                const cy = 80 + Math.random() * (rect.height - 160);
                 for (let i = 0; i < 12; i++) {
                     kmeansPoints.push({
-                        x: cx + (Math.random() - 0.5) * 80,
-                        y: cy + (Math.random() - 0.5) * 80
-                    });
+                    x: cx + (Math.random() - 0.5) * 120,  // was 80
+                    y: cy + (Math.random() - 0.5) * 120   // was 80
+                        });
                 }
             }
             drawKmeans();
