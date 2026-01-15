@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clustering: Advanced Methods for Real-World Data</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Source+Sans+3:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --white: #ffffff;
+            --off-white: #fafafa;
+            --light-gray: #f0f0f0;
+            --mid-gray: #888888;
+            --dark-gray: #333333;
+            --charcoal: #1a1a1a;
+            --black: #000000;
+            --accent: #2c2c2c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Source Sans 3', sans-serif;
+            background: var(--white);
+            color: var(--dark-gray);
+            line-height: 1.75;
+            font-size: 17px;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: var(--charcoal);
+            color: var(--white);
+            padding: 5rem 2rem 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255,255,255,0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255,255,255,0.02) 0%, transparent 40%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .chapter-badge {
+            display: inline-block;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--mid-gray);
+            border: 1px solid var(--mid-gray);
+            padding: 0.4rem 1rem;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.2rem, 5vw, 3.5rem);
+            font-weight: 400;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+        }
+
+        h1 em {
+            font-style: italic;
+            color: var(--mid-gray);
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            color: rgba(255,255,255,0.7);
+            max-width: 600px;
+            font-weight: 300;
+        }
+
+        /* Navigation */
+        .nav {
+            background: var(--white);
+            border-bottom: 1px solid var(--light-gray);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-inner {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            gap: 2rem;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .nav-inner::-webkit-scrollbar {
+            display: none;
+        }
+
+        .nav-link {
+            font-size: 0.85rem;
+            color: var(--mid-gray);
+            text-decoration: none;
+            white-space: nowrap;
+            padding: 0.5rem 0;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            color: var(--charcoal);
+            border-bottom-color: var(--charcoal);
+        }
+
+        /* Main Content */
+        .main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        /* Section */
+        .section {
+            margin-bottom: 5rem;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: baseline;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--charcoal);
+        }
+
+        .section-num {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--mid-gray);
+        }
+
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 400;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--charcoal);
+            margin: 2rem 0 1rem;
+        }
+
+        p {
+            margin-bottom: 1.25rem;
+            color: var(--dark-gray);
+        }
+
+        /* Lists */
+        ul, ol {
+            margin: 1rem 0 1.5rem 1.5rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+            color: var(--dark-gray);
+        }
+
+        /* Formula Box */
+        .formula {
+            background: var(--charcoal);
+            color: var(--white);
+            padding: 1.5rem 2rem;
+            border-radius: 4px;
+            margin: 1.5rem 0;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 1rem;
+            overflow-x: auto;
+            text-align: center;
+        }
+
+        .formula-label {
+            font-size: 0.75rem;
+            color: var(--mid-gray);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        /* Info Cards */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.25rem;
+            margin: 2rem 0;
+        }
+
+        .card {
+            background: var(--off-white);
+            border: 1px solid var(--light-gray);
+            padding: 1.5rem;
+            transition: all 0.25s ease;
+        }
+
+        .card:hover {
+            border-color: var(--charcoal);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        }
+
+        .card h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--charcoal);
+        }
+
+        .card p {
+            font-size: 0.9rem;
+            margin-bottom: 0;
+            color: var(--mid-gray);
+        }
+
+        /* Comparison Table */
+        .table-container {
+            overflow-x: auto;
+            margin: 2rem 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background: var(--charcoal);
+            color: var(--white);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 500;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--light-gray);
+            color: var(--dark-gray);
+        }
+
+        tr:hover td {
+            background: var(--off-white);
+        }
+
+        /* Note Box */
+        .note {
+            background: var(--light-gray);
+            border-left: 4px solid var(--charcoal);
+            padding: 1.25rem 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .note-title {
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+            color: var(--charcoal);
+        }
+
+        .note p {
+            margin-bottom: 0;
+            font-size: 0.95rem;
+        }
+
+        /* Interactive Demo Container */
+        .demo {
+            background: var(--charcoal);
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 2rem 0;
+        }
+
+        .demo-header {
+            background: var(--black);
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .demo-title {
+            color: var(--white);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .demo-badge {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--mid-gray);
+            background: rgba(255,255,255,0.1);
+            padding: 0.3rem 0.6rem;
+            border-radius: 3px;
+        }
+
+        .demo-body {
+            padding: 2rem;
+        }
+
+        .demo-canvas-wrap {
+            background: var(--white);
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 320px;
+            cursor: crosshair;
+        }
+
+        .demo-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            justify-content: center;
+        }
+
+        .btn {
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            padding: 0.6rem 1.25rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: var(--white);
+            color: var(--charcoal);
+        }
+
+        .btn-primary:hover {
+            background: var(--light-gray);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--white);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--white);
+        }
+
+        .demo-legend {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.7);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        /* Slider Control */
+        .slider-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: var(--white);
+            font-size: 0.85rem;
+        }
+
+        .slider-group input[type="range"] {
+            width: 120px;
+            accent-color: var(--white);
+        }
+
+        .slider-value {
+            font-family: 'IBM Plex Mono', monospace;
+            background: rgba(255,255,255,0.1);
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            min-width: 2rem;
+            text-align: center;
+        }
+
+        /* Dendrogram Visualization */
+        .dendro-container {
+            background: var(--white);
+            border-radius: 6px;
+            padding: 1.5rem;
+            min-height: 280px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .dendro-tree {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .dendro-level {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .dendro-node {
+            background: var(--charcoal);
+            color: var(--white);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-family: 'IBM Plex Mono', monospace;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .dendro-node:hover {
+            background: var(--black);
+            transform: scale(1.05);
+        }
+
+        .dendro-node.leaf {
+            background: var(--mid-gray);
+        }
+
+        .dendro-node.highlighted {
+            background: #4a90d9;
+        }
+
+        .dendro-connector {
+            width: 2px;
+            height: 20px;
+            background: var(--light-gray);
+        }
+
+        .dendro-branch {
+            display: flex;
+            gap: 3rem;
+        }
+
+        .dendro-branch::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 80%;
+            height: 2px;
+            background: var(--light-gray);
+            transform: translateX(-50%);
+        }
+
+        /* GMM Visualization */
+        .gmm-viz {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .gmm-step {
+            background: rgba(255,255,255,0.05);
+            border-radius: 6px;
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .gmm-step-num {
+            background: var(--white);
+            color: var(--charcoal);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .gmm-step-text {
+            color: rgba(255,255,255,0.9);
+            font-size: 0.9rem;
+        }
+
+        .gmm-step.active {
+            background: rgba(255,255,255,0.15);
+        }
+
+        .gmm-step.active .gmm-step-num {
+            background: #4a90d9;
+            color: var(--white);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--charcoal);
+            color: rgba(255,255,255,0.5);
+            padding: 3rem 2rem;
+            text-align: center;
+            font-size: 0.85rem;
+        }
+
+        footer a {
+            color: var(--white);
+            text-decoration: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .hero {
+                padding: 3rem 1.5rem;
+            }
+
+            .main {
+                padding: 2.5rem 1.5rem;
+            }
+
+            .demo-body {
+                padding: 1.5rem;
+            }
+
+            canvas {
+                height: 260px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="hero-content">
+            <span class="chapter-badge">Section 6.8</span>
+            <h1>Clustering: <em>Advanced Methods</em> for Real-World Data</h1>
+            <p class="hero-subtitle">Understanding latent structure discovery through probabilistic models, hierarchical methods, and practical algorithm selection.</p>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-inner">
+            <a href="#intro" class="nav-link">Introduction</a>
+            <a href="#objectives" class="nav-link">Objectives</a>
+            <a href="#hierarchical" class="nav-link">Hierarchical</a>
+            <a href="#probabilistic" class="nav-link">GMMs & EM</a>
+            <a href="#selection" class="nav-link">Model Selection</a>
+            <a href="#comparison" class="nav-link">Comparison</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main">
+
+        <!-- Section 1: Introduction -->
+        <section id="intro" class="section">
+            <div class="section-header">
+                <span class="section-num">6.8.1</span>
+                <h2>Clustering as Structure Discovery</h2>
+            </div>
+            
+            <p>Clustering seeks to uncover <strong>latent structure</strong> in data when no class labels are available. Unlike supervised learning, there is no single "correct" answer; instead, clustering algorithms impose inductive biases about what constitutes meaningful structure.</p>
+
+            <p>In practice, clustering answers fundamental questions:</p>
+
+            <ul>
+                <li>Are there <strong>natural groupings</strong> in the data?</li>
+                <li>At what <strong>level of granularity</strong> do these groupings emerge?</li>
+                <li>How <strong>stable</strong> are these structures under noise and sampling variation?</li>
+            </ul>
+
+            <div class="note">
+                <div class="note-title">Key Insight</div>
+                <p>Because clustering is ill-posed, the choice of algorithm implicitly defines the notion of similarity and structure being discovered. Different algorithms will reveal different aspects of your data.</p>
+            </div>
+        </section>
+
+        <!-- Section 2: Objectives -->
+        <section id="objectives" class="section">
+            <div class="section-header">
+                <span class="section-num">6.8.2</span>
+                <h2>Objective Functions and Implicit Assumptions</h2>
+            </div>
+
+            <p>Every clustering method optimizes (explicitly or implicitly) an objective function. Understanding these objectives reveals the assumptions baked into each algorithm.</p>
+
+            <h3>k-Means Objective</h3>
+            <p>k-means minimizes within-cluster squared Euclidean distance:</p>
+
+            <div class="formula">
+                <span class="formula-label">k-Means Objective Function</span>
+                J = Σₖ Σᵢ∈Cₖ ‖xᵢ − μₖ‖²
+            </div>
+
+            <p>This implies strong assumptions:</p>
+
+            <div class="card-grid">
+                <div class="card">
+                    <h4>Convex Clusters</h4>
+                    <p>Clusters are assumed to be roughly spherical and convex in shape.</p>
+                </div>
+                <div class="card">
+                    <h4>Isotropic Variance</h4>
+                    <p>All dimensions contribute equally; no directional bias.</p>
+                </div>
+                <div class="card">
+                    <h4>Meaningful Distance</h4>
+                    <p>Euclidean distance in feature space must be semantically meaningful.</p>
+                </div>
+            </div>
+
+            <div class="note warning">
+                <div class="note-title">Warning</div>
+                <p>These assumptions often fail in high-dimensional, noisy, or correlated data—motivating alternative formulations like GMMs.</p>
+            </div>
+
+            <!-- Interactive k-Means Demo -->
+            <div class="demo">
+                <div class="demo-header">
+                    <span class="demo-title">Interactive k-Means Clustering</span>
+                    <span class="demo-badge">CLICK TO ADD POINTS</span>
+                </div>
+                <div class="demo-body">
+                    <div class="demo-canvas-wrap">
+                        <canvas id="kmeansCanvas"></canvas>
+                    </div>
+                    <div class="demo-controls">
+                        <div class="slider-group">
+                            <span>Clusters (k):</span>
+                            <input type="range" id="kSlider" min="2" max="6" value="3">
+                            <span class="slider-value" id="kValue">3</span>
+                        </div>
+                        <button class="btn btn-primary" id="runKmeans">Run k-Means</button>
+                        <button class="btn btn-secondary" id="resetKmeans">Reset</button>
+                        <button class="btn btn-secondary" id="randomPoints">Random Points</button>
+                    </div>
+                    <div class="demo-legend">
+                        <div class="legend-item">
+                            <div class="legend-dot" style="background: #4a90d9"></div>
+                            <span>Cluster 1</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot" style="background: #e74c3c"></div>
+                            <span>Cluster 2</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot" style="background: #2ecc71"></div>
+                            <span>Cluster 3</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot" style="background: #333"></div>
+                            <span>Centroids</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Hierarchical -->
+        <section id="hierarchical" class="section">
+            <div class="section-header">
+                <span class="section-num">6.8.3</span>
+                <h2>Hierarchical Clustering in Depth</h2>
+            </div>
+
+            <p>Hierarchical clustering does not optimize a single global objective. Instead, it constructs a <strong>nested sequence of partitions</strong>, revealing structure at multiple resolutions.</p>
+
+            <h3>Linkage Criteria</h3>
+            <p>The choice of linkage defines cluster proximity:</p>
+
+            <div class="card-grid">
+                <div class="card">
+                    <h4>Single Linkage</h4>
+                    <div class="formula" style="font-size: 0.85rem; padding: 1rem;">
+                        d(A,B) = min d(x,y)
+                    </div>
+                    <p>Tends to produce chaining effects. Best for elongated clusters.</p>
+                </div>
+                <div class="card">
+                    <h4>Complete Linkage</h4>
+                    <div class="formula" style="font-size: 0.85rem; padding: 1rem;">
+                        d(A,B) = max d(x,y)
+                    </div>
+                    <p>Produces compact clusters but is sensitive to outliers.</p>
+                </div>
+                <div class="card">
+                    <h4>Average Linkage</h4>
+                    <div class="formula" style="font-size: 0.85rem; padding: 1rem;">
+                        d(A,B) = avg d(x,y)
+                    </div>
+                    <p>Balances compactness and robustness. Often preferred.</p>
+                </div>
+            </div>
+
+            <h3>Algorithmic Properties</h3>
+            <ul>
+                <li><strong>Time complexity:</strong> typically O(n² log n)</li>
+                <li><strong>Memory intensive:</strong> stores full distance matrix</li>
+                <li><strong>Deterministic:</strong> once distance metric is fixed</li>
+            </ul>
+
+            <!-- Hierarchical Demo -->
+            <div class="demo">
+                <div class="demo-header">
+                    <span class="demo-title">Dendrogram Visualization</span>
+                    <span class="demo-badge">AGGLOMERATIVE CLUSTERING</span>
+                </div>
+                <div class="demo-body">
+                    <div class="dendro-container" id="dendroViz">
+                        <!-- Dendrogram will be rendered here -->
+                    </div>
+                    <div class="demo-controls" style="margin-top: 1.5rem;">
+                        <button class="btn btn-primary" id="stepDendro">Step Through Merge</button>
+                        <button class="btn btn-secondary" id="resetDendro">Reset</button>
+                    </div>
+                    <div class="demo-legend">
+                        <div class="legend-item">
+                            <div class="legend-dot" style="background: #4a90d9"></div>
+                            <span>Currently merging</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot" style="background: #888"></div>
+                            <span>Individual points</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Probabilistic -->
+        <section id="probabilistic" class="section">
+            <div class="section-header">
+                <span class="section-num">6.8.4</span>
+                <h2>Probabilistic Clustering and Mixture Models</h2>
+            </div>
+
+            <p>Probabilistic clustering assumes data is generated by a <strong>mixture of latent distributions</strong>. This soft assignment approach provides uncertainty quantification.</p>
+
+            <h3>Gaussian Mixture Models (GMMs)</h3>
+            <p>Each cluster k is parameterized by:</p>
+            <ul>
+                <li><strong>Mean μₖ</strong> — cluster center</li>
+                <li><strong>Covariance Σₖ</strong> — cluster shape and orientation</li>
+                <li><strong>Mixing coefficient πₖ</strong> — cluster weight</li>
+            </ul>
+
+            <div class="formula">
+                <span class="formula-label">GMM Likelihood</span>
+                L = ∏ᵢ Σₖ πₖ · N(xᵢ | μₖ, Σₖ)
+            </div>
+
+            <h3>Expectation-Maximization (EM)</h3>
+            <p>EM alternates between two steps until convergence:</p>
+
+            <!-- EM Steps Demo -->
+            <div class="demo">
+                <div class="demo-header">
+                    <span class="demo-title">EM Algorithm Steps</span>
+                    <span class="demo-badge">INTERACTIVE</span>
+                </div>
+                <div class="demo-body">
+                    <div class="gmm-viz" id="emSteps">
+                        <div class="gmm-step" data-step="1">
+                            <div class="gmm-step-num">E</div>
+                            <div class="gmm-step-text"><strong>Expectation Step:</strong> Compute posterior cluster responsibilities P(k|xᵢ) for each point</div>
+                        </div>
+                        <div class="gmm-step" data-step="2">
+                            <div class="gmm-step-num">M</div>
+                            <div class="gmm-step-text"><strong>Maximization Step:</strong> Update parameters (μ, Σ, π) to maximize expected log-likelihood</div>
+                        </div>
+                        <div class="gmm-step" data-step="3">
+                            <div class="gmm-step-num">?</div>
+                            <div class="gmm-step-text"><strong>Convergence Check:</strong> If log-likelihood change < ε, stop; otherwise return to E-step</div>
+                        </div>
+                    </div>
+                    <div class="demo-controls" style="margin-top: 1.5rem;">
+                        <button class="btn btn-primary" id="animateEM">Animate EM</button>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Relationship to k-Means</h3>
+            <p>k-means can be derived as a special case of GMMs with:</p>
+            <ul>
+                <li>Equal, spherical covariances (Σ = σ²I)</li>
+                <li>Hard assignments (responsibilities → 0 or 1)</li>
+                <li>Identical mixing weights (πₖ = 1/K)</li>
+            </ul>
+
+            <div class="note">
+                <div class="note-title">Key Insight</div>
+                <p>Probabilistic clustering strictly generalizes k-means, offering soft assignments and richer cluster shapes at the cost of computational complexity.</p>
+            </div>
+        </section>
+
+        <!-- Section 5: Model Selection -->
+        <section id="selection" class="section">
+            <div class="section-header">
+                <span class="section-num">6.8.5</span>
+                <h2>Model Selection and the Number of Clusters</h2>
+            </div>
+
+            <p>Unlike supervised learning, clustering lacks labels for validation. Choosing k requires balancing fit against complexity.</p>
+
+            <h3>Common Strategies</h3>
+            <div class="card-grid">
+                <div class="card">
+                    <h4>BIC / MDL Criteria</h4>
+                    <p>Penalize model complexity to prevent overfitting. Lower is better.</p>
+                </div>
+                <div class="card">
+                    <h4>Stability Analysis</h4>
+                    <p>Run clustering multiple times; stable clusters are more reliable.</p>
+                </div>
+                <div class="card">
+                    <h4>Domain Knowledge</h4>
+                    <p>Interpret clusters; do they make semantic sense?</p>
+                </div>
+            </div>
+
+            <div class="formula">
+                <span class="formula-label">Bayesian Information Criterion</span>
+                BIC = −2 log L + p · log n
+            </div>
+
+            <p>Where <strong>p</strong> is the number of parameters and <strong>n</strong> is the sample size. This discourages overfitting by excessive cluster proliferation.</p>
+        </section>
+
+        <!-- Section 6: Comparison -->
+        <section id="comparison" class="section">
+            <div class="section-header">
+                <span class="section-num">6.8.8</span>
+                <h2>Computational Considerations</h2>
+            </div>
+
+            <p>Algorithm choice is a trade-off between expressiveness, speed, and interpretability:</p>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Method</th>
+                            <th>Time Complexity</th>
+                            <th>Scalability</th>
+                            <th>Interpretability</th>
+                            <th>Cluster Shape</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>k-Means</strong></td>
+                            <td>O(nkT)</td>
+                            <td>Excellent</td>
+                            <td>Low</td>
+                            <td>Spherical</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Hierarchical</strong></td>
+                            <td>O(n² log n)</td>
+                            <td>Poor</td>
+                            <td>High</td>
+                            <td>Any</td>
+                        </tr>
+                        <tr>
+                            <td><strong>GMM (EM)</strong></td>
+                            <td>O(nkT)</td>
+                            <td>Moderate</td>
+                            <td>Medium</td>
+                            <td>Elliptical</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p>Where: <strong>n</strong> = instances, <strong>k</strong> = clusters, <strong>T</strong> = iterations</p>
+
+            <h3>Clustering as Foundation</h3>
+            <p>Clustering often serves as:</p>
+            <ul>
+                <li>A <strong>preprocessing step</strong> for classification</li>
+                <li>A basis for <strong>semi-supervised learning</strong></li>
+                <li>A tool for <strong>feature construction</strong></li>
+            </ul>
+
+            <div class="note">
+                <div class="note-title">Summary</div>
+                <p>Advanced clustering methods move beyond geometric partitioning to represent uncertainty, capture complex structure, and support principled model selection. Understanding their assumptions and limitations is essential when applying clustering to real-world data mining tasks.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>Based on "Data Mining: Practical Machine Learning Tools and Techniques" — Section 6.8</p>
+    </footer>
+
+    <!-- JavaScript for Interactive Demos -->
+    <script>
+        // ==================== k-Means Demo ====================
+        const kmeansCanvas = document.getElementById('kmeansCanvas');
+        const kmeansCtx = kmeansCanvas.getContext('2d');
+        let kmeansPoints = [];
+        let kmeansCentroids = [];
+        let kmeansAssignments = [];
+        const kmeansColors = ['#4a90d9', '#e74c3c', '#2ecc71', '#9b59b6', '#f39c12', '#1abc9c'];
+
+        function resizeCanvas(canvas) {
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width * window.devicePixelRatio;
+            canvas.height = rect.height * window.devicePixelRatio;
+            const ctx = canvas.getContext('2d');
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+        }
+
+        function initKmeansCanvas() {
+            resizeCanvas(kmeansCanvas);
+            drawKmeans();
+        }
+
+        function drawKmeans() {
+            const rect = kmeansCanvas.getBoundingClientRect();
+            kmeansCtx.clearRect(0, 0, rect.width, rect.height);
+
+            // Draw points
+            kmeansPoints.forEach((p, i) => {
+                const color = kmeansAssignments[i] !== undefined ? kmeansColors[kmeansAssignments[i]] : '#888';
+                kmeansCtx.beginPath();
+                kmeansCtx.arc(p.x, p.y, 6, 0, Math.PI * 2);
+                kmeansCtx.fillStyle = color;
+                kmeansCtx.fill();
+            });
+
+            // Draw centroids
+            kmeansCentroids.forEach((c, i) => {
+                kmeansCtx.beginPath();
+                kmeansCtx.arc(c.x, c.y, 12, 0, Math.PI * 2);
+                kmeansCtx.fillStyle = '#1a1a1a';
+                kmeansCtx.fill();
+                kmeansCtx.beginPath();
+                kmeansCtx.arc(c.x, c.y, 8, 0, Math.PI * 2);
+                kmeansCtx.fillStyle = kmeansColors[i];
+                kmeansCtx.fill();
+            });
+        }
+
+        kmeansCanvas.addEventListener('click', (e) => {
+            const rect = kmeansCanvas.getBoundingClientRect();
+            kmeansPoints.push({
+                x: e.clientX - rect.left,
+                y: e.clientY - rect.top
+            });
+            drawKmeans();
+        });
+
+        document.getElementById('runKmeans').addEventListener('click', () => {
+            if (kmeansPoints.length < 3) return;
+            const k = parseInt(document.getElementById('kSlider').value);
+            runKmeans(k);
+        });
+
+        document.getElementById('resetKmeans').addEventListener('click', () => {
+            kmeansPoints = [];
+            kmeansCentroids = [];
+            kmeansAssignments = [];
+            drawKmeans();
+        });
+
+        document.getElementById('randomPoints').addEventListener('click', () => {
+            const rect = kmeansCanvas.getBoundingClientRect();
+            kmeansPoints = [];
+            kmeansAssignments = [];
+            kmeansCentroids = [];
+            
+            // Generate 3 clusters
+            for (let c = 0; c < 3; c++) {
+                const cx = 80 + Math.random() * (rect.width - 160);
+                const cy = 60 + Math.random() * (rect.height - 120);
+                for (let i = 0; i < 12; i++) {
+                    kmeansPoints.push({
+                        x: cx + (Math.random() - 0.5) * 80,
+                        y: cy + (Math.random() - 0.5) * 80
+                    });
+                }
+            }
+            drawKmeans();
+        });
+
+        document.getElementById('kSlider').addEventListener('input', (e) => {
+            document.getElementById('kValue').textContent = e.target.value;
+        });
+
+        function runKmeans(k) {
+            // Initialize centroids randomly
+            const shuffled = [...kmeansPoints].sort(() => Math.random() - 0.5);
+            kmeansCentroids = shuffled.slice(0, k).map(p => ({...p}));
+
+            let iterations = 0;
+            const maxIter = 50;
+
+            function iterate() {
+                // Assign points to nearest centroid
+                kmeansAssignments = kmeansPoints.map(p => {
+                    let minDist = Infinity;
+                    let minIdx = 0;
+                    kmeansCentroids.forEach((c, i) => {
+                        const dist = Math.hypot(p.x - c.x, p.y - c.y);
+                        if (dist < minDist) {
+                            minDist = dist;
+                            minIdx = i;
+                        }
+                    });
+                    return minIdx;
+                });
+
+                // Update centroids
+                const newCentroids = kmeansCentroids.map((_, i) => {
+                    const assigned = kmeansPoints.filter((_, j) => kmeansAssignments[j] === i);
+                    if (assigned.length === 0) return kmeansCentroids[i];
+                    return {
+                        x: assigned.reduce((s, p) => s + p.x, 0) / assigned.length,
+                        y: assigned.reduce((s, p) => s + p.y, 0) / assigned.length
+                    };
+                });
+
+                const converged = newCentroids.every((c, i) => 
+                    Math.hypot(c.x - kmeansCentroids[i].x, c.y - kmeansCentroids[i].y) < 1
+                );
+
+                kmeansCentroids = newCentroids;
+                drawKmeans();
+
+                iterations++;
+                if (!converged && iterations < maxIter) {
+                    setTimeout(iterate, 300);
+                }
+            }
+
+            iterate();
+        }
+
+        // ==================== Dendrogram Demo ====================
+        let dendroState = {
+            nodes: ['A', 'B', 'C', 'D', 'E', 'F'],
+            merges: [],
+            step: 0
+        };
+
+        const mergeSequence = [
+            ['A', 'B', 'AB'],
+            ['C', 'D', 'CD'],
+            ['E', 'F', 'EF'],
+            ['AB', 'CD', 'ABCD'],
+            ['ABCD', 'EF', 'ALL']
+        ];
+
+        function renderDendro() {
+            const container = document.getElementById('dendroViz');
+            container.innerHTML = '';
+            
+            const tree = document.createElement('div');
+            tree.className = 'dendro-tree';
+
+            // Current level nodes
+            const level = document.createElement('div');
+            level.className = 'dendro-level';
+
+            dendroState.nodes.forEach(node => {
+                const nodeEl = document.createElement('div');
+                nodeEl.className = 'dendro-node' + (node.length === 1 ? ' leaf' : '');
+                nodeEl.textContent = node;
+                level.appendChild(nodeEl);
+            });
+
+            tree.appendChild(level);
+            container.appendChild(tree);
+        }
+
+        document.getElementById('stepDendro').addEventListener('click', () => {
+            if (dendroState.step >= mergeSequence.length) return;
+
+            const merge = mergeSequence[dendroState.step];
+            const idx1 = dendroState.nodes.indexOf(merge[0]);
+            const idx2 = dendroState.nodes.indexOf(merge[1]);
+
+            if (idx1 !== -1 && idx2 !== -1) {
+                dendroState.nodes.splice(Math.max(idx1, idx2), 1);
+                dendroState.nodes.splice(Math.min(idx1, idx2), 1);
+                dendroState.nodes.push(merge[2]);
+            }
+
+            dendroState.step++;
+            renderDendro();
+        });
+
+        document.getElementById('resetDendro').addEventListener('click', () => {
+            dendroState = {
+                nodes: ['A', 'B', 'C', 'D', 'E', 'F'],
+                merges: [],
+                step: 0
+            };
+            renderDendro();
+        });
+
+        // ==================== EM Animation ====================
+        let emAnimating = false;
+        document.getElementById('animateEM').addEventListener('click', () => {
+            if (emAnimating) return;
+            emAnimating = true;
+
+            const steps = document.querySelectorAll('.gmm-step');
+            let currentStep = 0;
+            let iterations = 0;
+            const maxIterations = 3;
+
+            function animateStep() {
+                steps.forEach(s => s.classList.remove('active'));
+                steps[currentStep].classList.add('active');
+
+                currentStep++;
+                if (currentStep >= steps.length) {
+                    currentStep = 0;
+                    iterations++;
+                }
+
+                if (iterations < maxIterations) {
+                    setTimeout(animateStep, 800);
+                } else {
+                    emAnimating = false;
+                    setTimeout(() => {
+                        steps.forEach(s => s.classList.remove('active'));
+                    }, 800);
+                }
+            }
+
+            animateStep();
+        });
+
+        // Initialize
+        window.addEventListener('load', () => {
+            initKmeansCanvas();
+            renderDendro();
+        });
+
+        window.addEventListener('resize', initKmeansCanvas);
+    </script>
+</body>
+</html>
