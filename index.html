@@ -675,7 +675,7 @@
                 </div>
                 <div class="demo-body">
                     <div class="demo-canvas-wrap">
-                        <canvas id="kmeansCanvas"></canvas>
+                        <canvas id="kmeansCanvas" width="800" height="450"></canvas>
                     </div>
                     <div class="demo-controls">
                         <div class="slider-group">
@@ -939,10 +939,9 @@
 
         function resizeCanvas(canvas) {
             const rect = canvas.getBoundingClientRect();
-            canvas.width = rect.width * window.devicePixelRatio;
-            canvas.height = rect.height * window.devicePixelRatio;
-            const ctx = canvas.getContext('2d');
-            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+            // Set canvas internal size to match CSS size (1:1 mapping)
+            canvas.width = rect.width;
+            canvas.height = rect.height;
         }
 
         function initKmeansCanvas() {
@@ -951,8 +950,8 @@
         }
 
         function drawKmeans() {
-            const rect = kmeansCanvas.getBoundingClientRect();
-            kmeansCtx.clearRect(0, 0, rect.width, rect.height);
+            // Clear entire canvas
+            kmeansCtx.clearRect(0, 0, kmeansCanvas.width, kmeansCanvas.height);
 
             // Draw points
             kmeansPoints.forEach((p, i) => {
@@ -999,20 +998,25 @@
         });
 
         document.getElementById('randomPoints').addEventListener('click', () => {
-            const rect = kmeansCanvas.getBoundingClientRect();
+            // Ensure canvas dimensions are set correctly first
+            resizeCanvas(kmeansCanvas);
+            
+            const width = kmeansCanvas.width;
+            const height = kmeansCanvas.height;
+            
             kmeansPoints = [];
             kmeansAssignments = [];
             kmeansCentroids = [];
             
-            // Generate 3 clusters
+            // Generate 3 clusters with proper margins
             for (let c = 0; c < 3; c++) {
-                const cx = 100 + Math.random() * (rect.width - 200);  // more margin
-                const cy = 80 + Math.random() * (rect.height - 160);
+                const cx = 80 + Math.random() * (width - 160);
+                const cy = 80 + Math.random() * (height - 160);
                 for (let i = 0; i < 12; i++) {
                     kmeansPoints.push({
-                    x: cx + (Math.random() - 0.5) * 120,  // was 80
-                    y: cy + (Math.random() - 0.5) * 120   // was 80
-                        });
+                        x: cx + (Math.random() - 0.5) * 80,
+                        y: cy + (Math.random() - 0.5) * 80
+                    });
                 }
             }
             drawKmeans();
